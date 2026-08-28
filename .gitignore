@@ -1,0 +1,24 @@
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# Variables de entorno / secretos
+.env
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Claude / IA
+.claude/
+CLAUDE.md
+.claude.json
+
+
