@@ -8,6 +8,7 @@ __pycache__/
 *.pyc
 *.pyo
 .Python
+.pytest_cache/
 
 # Variables de entorno / secretos
 .env
@@ -19,6 +20,7 @@ Thumbs.db
 # Claude / IA
 .claude/
 CLAUDE.md
+Paso01_Modelo_CLAUDE.md
 .claude.json
 
 
