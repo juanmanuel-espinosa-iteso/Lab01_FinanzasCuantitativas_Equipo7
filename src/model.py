@@ -136,3 +136,36 @@ def optimizar_cotizaciones(pi_I, pi_L, S0):
         "spread": round(spread, 2),
         "utilidad": round(utilidad, 2),
     }
+
+def analisis_sensibilidad(
+    valores_pi_I=(0.1, 0.4, 0.7),
+    S0=S0
+):
+    """Repite la optimizacion al variar la proporcion informada.
+
+    Como cada trader es informado o de liquidez,
+    se usa pi_L = 1 - pi_I.
+
+    El objetivo es verificar numericamente si un mayor riesgo
+    de seleccion adversa lleva a un spread optimo mayor.
+    """
+
+    resultados = []
+
+    for pi_I in valores_pi_I:
+
+        pi_L = 1 - pi_I
+
+        optimo = optimizar_cotizaciones(
+            pi_I=pi_I,
+            pi_L=pi_L,
+            S0=S0
+        )
+
+        resultados.append({
+            "pi_I": pi_I,
+            "pi_L": pi_L,
+            **optimo
+        })
+
+    return resultados

@@ -3,8 +3,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.model import optimizar_cotizaciones, prob_ejecucion_liquidez, utilidad_esperada
-
+from src.model import (
+    _perdida_informada_ask,
+    optimizar_cotizaciones,
+    prob_ejecucion_liquidez,
+    utilidad_esperada,
+)
 
 def test_optimizar_cotizaciones_pi_I_cero_spread_analitico():
     """Con pi_I=0, Pi(A,B) se reduce a maximizar h(s)=(0.50-0.08s)*s por lado.
@@ -63,3 +67,19 @@ def test_utilidad_esperada_decrece_al_alejar_cotizaciones_del_optimo():
     )
 
     assert utilidad_en_optimo > utilidad_spread_amplio
+
+def test_perdida_informada_ask_decrece_con_A():
+    """La perdida esperada debe caer cuando el ask se aleja hacia arriba."""
+
+    valores_A = [
+        19.90,
+        21.00,
+        23.00
+    ]
+
+    perdidas = [
+        _perdida_informada_ask(A)
+        for A in valores_A
+    ]
+
+    assert perdidas[0] > perdidas[1] > perdidas[2]

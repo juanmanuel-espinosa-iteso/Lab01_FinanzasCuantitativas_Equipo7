@@ -123,26 +123,69 @@ def construir_regimenes(pi_I=PI_I, pi_L=PI_L, S0=S0):
     }
 
 
-def simular_monte_carlo(regimenes, n_corridas=1000, n_trades=1000, seed=42):
-    """Corre n_corridas simulaciones independientes de n_trades cada una, por
-    regimen, y resume la distribucion del P&L final de cada corrida.
+def simular_monte_carlo(
+    regimenes,
+    n_corridas=1000,
+    n_trades=1000,
+    seed=42,
+    devolver_pnl_finales=False
+):
+    """Corre simulaciones Monte Carlo para cada regimen.
 
-    Cada corrida usa su propia seed (seed + i) en vez de compartir una seed
-    global entre las 1,000 corridas (Lab01/CLAUDE.md), para que sean
-    realizaciones independientes de la variable aleatoria "P&L acumulado de
-    una corrida de n_trades", no 1,000 fragmentos correlacionados de un
-    unico stream de aleatoriedad.
+    Si devolver_pnl_finales=True, tambien devuelve los P&L finales
+    de cada corrida para poder construir el histograma obligatorio.
     """
+
     resultados = {}
+
+    pnl_finales_por_regimen = {}
+
     for nombre_regimen, (bid, ask) in regimenes.items():
+
         pnl_por_corrida = np.empty(n_corridas)
+
         for i in range(n_corridas):
-            trades = simular_trades(bid, ask, n_trades=n_trades, seed=seed + i)
+
+            trades = simular_trades(
+                bid,
+                ask,
+                n_trades=n_trades,
+                seed=seed + i
+            )
+
             pnl_por_corrida[i] = trades["pnl"].sum()
 
+        pnl_finales_por_regimen[
+            nombre_regimen
+        ] = pnl_por_corrida.copy()
+
         resultados[nombre_regimen] = {
-            "pnl_promedio": round(float(pnl_por_corrida.mean()), 2),
-            "pnl_std": round(float(pnl_por_corrida.std(ddof=1)), 2),
-            "prob_perdida": round(float((pnl_por_corrida < 0).mean()), 4),
+
+            "pnl_promedio": round(
+                float(pnl_por_corrida.mean()),
+                2
+            ),
+
+            "pnl_std": round(
+                float(
+                    pnl_por_corrida.std(ddof=1)
+                ),
+                2
+            ),
+
+            "prob_perdida": round(
+                float(
+                    (pnl_por_corrida < 0).mean()
+                ),
+                4
+            ),
         }
+
+    if devolver_pnl_finales:
+
+        return (
+            resultados,
+            pnl_finales_por_regimen
+        )
+
     return resultados
