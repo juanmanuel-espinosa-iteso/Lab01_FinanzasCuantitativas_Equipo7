@@ -4,6 +4,8 @@ Este modulo recibe resultados calculados por model.py y simulation.py.
 No vuelve a implementar el modelo ni el simulador.
 """
 
+from pathlib import Path
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -12,6 +14,14 @@ from src.model import (
     COEF_PENDIENTE_LIQUIDEZ,
     prob_ejecucion_liquidez,
 )
+
+DIR_FIGURAS = Path(__file__).resolve().parent.parent / "docs" / "figuras"
+
+
+def _guardar_figura(fig, nombre_archivo):
+    """Guarda fig como PNG en docs/figuras/, creando la carpeta si hace falta."""
+    DIR_FIGURAS.mkdir(parents=True, exist_ok=True)
+    fig.savefig(DIR_FIGURAS / nombre_archivo, dpi=150, bbox_inches="tight")
 
 
 def figura_probabilidad_ejecucion():
@@ -61,6 +71,8 @@ def figura_probabilidad_ejecucion():
 
     fig.tight_layout()
 
+    _guardar_figura(fig, "figura1_prob_ejecucion.png")
+
     return fig
 
 
@@ -96,6 +108,8 @@ def figura_pnl_acumulado(trades_por_regimen):
     ax.legend()
 
     fig.tight_layout()
+
+    _guardar_figura(fig, "figura2_pnl_acumulado.png")
 
     return fig
 
@@ -141,6 +155,8 @@ def figura_inventario_acumulado(trades_por_regimen):
 
     fig.tight_layout()
 
+    _guardar_figura(fig, "figura3_inventario_acumulado.png")
+
     return fig
 
 
@@ -177,6 +193,8 @@ def figura_histograma_monte_carlo(
     ax.legend()
 
     fig.tight_layout()
+
+    _guardar_figura(fig, "figura4_histograma_montecarlo.png")
 
     return fig
 
@@ -232,5 +250,7 @@ def figura_sensibilidad(sensibilidad):
     ax.legend()
 
     fig.tight_layout()
+
+    _guardar_figura(fig, "figura5_sensibilidad_spread_vs_pi_I.png")
 
     return fig
